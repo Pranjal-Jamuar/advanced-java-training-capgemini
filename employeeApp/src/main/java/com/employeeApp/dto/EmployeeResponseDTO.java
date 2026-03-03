@@ -1,8 +1,12 @@
 package com.employeeApp.dto;
 
-public class EmployeeResponseDTO {
+import java.io.Serializable;
 
-    private int id;
+public class EmployeeResponseDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+	
+	private int id;
     private String name;
     private String email;
     private int age;
