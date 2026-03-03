@@ -3,8 +3,9 @@ package com.employeeApp.controller;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
-import com.employeeApp.entity.Employee;
+import com.employeeApp.dto.*;
 import com.employeeApp.service.EmployeeService;
+
 import java.util.List;
 
 @RestController
@@ -18,31 +19,28 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<Employee> create(@Valid @RequestBody Employee employee) {
+    public ResponseEntity<EmployeeResponseDTO> create(
+            @Valid @RequestBody EmployeeRequestDTO dto) {
+
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(service.createEmployee(employee));
+                .body(service.create(dto));
     }
 
     @GetMapping
-    public ResponseEntity<List<Employee>> getAll() {
-        return ResponseEntity.ok(service.getAllEmployees());
+    public ResponseEntity<List<EmployeeResponseDTO>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 
+    @PutMapping("/{empId}/assign/{compId}")
+    public ResponseEntity<EmployeeResponseDTO> assign(
+            @PathVariable int empId,
+            @PathVariable int compId) {
+
+        return ResponseEntity.ok(service.assign(empId, compId));
+    }
+    
     @GetMapping("/{id}")
-    public ResponseEntity<Employee> getById(@PathVariable int id) {
-        return ResponseEntity.ok(service.getEmployeeById(id));
-    }
-
-    @PutMapping("/{employeeId}/assign/{companyId}")
-    public ResponseEntity<Employee> assign(@PathVariable int employeeId,
-                                           @PathVariable int companyId) {
-        return ResponseEntity.ok(
-                service.assignEmployeeToCompany(employeeId, companyId));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
-        service.deleteEmployee(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<EmployeeResponseDTO> getById(@PathVariable int id) {
+        return ResponseEntity.ok(service.getById(id));
     }
 }

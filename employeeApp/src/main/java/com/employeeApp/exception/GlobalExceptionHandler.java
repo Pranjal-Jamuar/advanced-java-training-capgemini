@@ -1,5 +1,6 @@
 package com.employeeApp.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -25,11 +26,19 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleValidation(MethodArgumentNotValidException ex) {
 
         Map<String, String> errors = new HashMap<>();
-
-        ex.getBindingResult().getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage())
-        );
+        ex.getBindingResult().getFieldErrors()
+                .forEach(err -> errors.put(err.getField(), err.getDefaultMessage()));
 
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Object> handleConflict() {
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("error", "Conflict");
+        body.put("message", "Duplicate value violates unique constraint");
+
+        return new ResponseEntity<>(body, HttpStatus.CONFLICT);
     }
 }

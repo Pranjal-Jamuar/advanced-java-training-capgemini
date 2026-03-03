@@ -3,8 +3,11 @@ package com.employeeApp.controller;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
-import com.employeeApp.entity.Company;
+
+import com.employeeApp.dto.CompanyRequestDTO;
+import com.employeeApp.dto.CompanyResponseDTO;
 import com.employeeApp.service.CompanyService;
+
 import java.util.List;
 
 @RestController
@@ -17,25 +20,35 @@ public class CompanyController {
         this.service = service;
     }
 
+    // CREATE
     @PostMapping
-    public ResponseEntity<Company> create(@Valid @RequestBody Company company) {
+    public ResponseEntity<CompanyResponseDTO> create(
+            @Valid @RequestBody CompanyRequestDTO dto) {
+
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(service.createCompany(company));
+                .body(service.create(dto));
     }
 
+    // GET ALL
     @GetMapping
-    public ResponseEntity<List<Company>> getAll() {
-        return ResponseEntity.ok(service.getAllCompanies());
+    public ResponseEntity<List<CompanyResponseDTO>> getAll() {
+
+        return ResponseEntity.ok(service.getAll());
     }
 
+    // GET BY ID
     @GetMapping("/{id}")
-    public ResponseEntity<Company> getById(@PathVariable int id) {
-        return ResponseEntity.ok(service.getCompanyById(id));
+    public ResponseEntity<CompanyResponseDTO> getById(
+            @PathVariable int id) {
+
+        return ResponseEntity.ok(service.getById(id));
     }
 
+    // DELETE
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
-        service.deleteCompany(id);
+
+        service.delete(id);
         return ResponseEntity.noContent().build();
     }
 }
